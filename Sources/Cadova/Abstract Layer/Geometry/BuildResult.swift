@@ -65,7 +65,13 @@ internal extension BuildResult {
 
     func applyingTransform(_ transform: D.Transform) -> Self {
         let newNode = GeometryNode<D>.transform(node, transform: transform)
-        let newElements = elements.setting(elements[PartCatalog.self].applyingTransform(transform.transform3D))
+        var newElements = elements
+        newElements = newElements.setting(elements[PartCatalog.self].applyingTransform(transform.transform3D))
+        if D.self == D2.self {
+            newElements = newElements.setting(
+                elements[PathCollection.self].transformed(transform as! Transform2D)
+            )
+        }
         return Self(node: newNode, elements: newElements)
     }
 }
